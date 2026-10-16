@@ -239,6 +239,29 @@ test("reader propagates API failure without a partial report", async () => {
     ),
   );
 });
+test("reader retains its slot until outstanding requests settle after failure", async () => {
+  let calls = 0,
+    settled = false;
+  const release: ((value: unknown) => void)[] = [];
+  const pending = readForum(
+    {
+      get: async () => {
+        calls++;
+        if (calls === 1) throw Error("denied");
+        return new Promise((resolve) => release.push(resolve));
+      },
+    },
+    ids,
+  ).catch(() => {
+    settled = true;
+  });
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(calls, 5);
+  assert.equal(settled, false);
+  for (const done of release) done({});
+  await pending;
+  assert.equal(settled, true);
+});
 test("REST has bounded timeout, no retries, rejects rate-limit waits", () => {
   const r = transport("placeholder");
   assert.equal(r.options.retries, 0);
