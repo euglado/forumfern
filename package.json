@@ -1,0 +1,29 @@
+{
+  "name": "forumfern",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "A private bilingual Discord forum tag and guidelines browser",
+  "engines": {
+    "node": ">=24.13.0 <25"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/main.ts",
+    "register": "node --env-file-if-exists=.env src/register.ts",
+    "setup": "node scripts/setup.mjs",
+    "test": "node --test test/*.test.ts test/*.test.mjs",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit",
+    "supply": "node scripts/verify.mjs",
+    "check": "npm run lint && npm run typecheck && npm test && npm run supply"
+  },
+  "dependencies": {
+    "discord.js": "14.27.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@types/node": "24.10.1",
+    "typescript": "7.0.2"
+  }
+}
